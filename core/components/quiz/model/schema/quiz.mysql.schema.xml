@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<model package="quiz" baseClass="xPDOObject" platform="mysql" defaultEngine="InnoDB" phpdoc-package="quiz"
+       version="1.1">
+
+    <object class="QuizForm" table="quiz_forms" extends="xPDOSimpleObject">
+        <field key="uuid" dbtype="varchar" precision="100" phptype="string" null="true" default=""/>
+
+        <field key="cover" dbtype="tinyint" precision="1" attributes="unsigned" phptype="boolean" null="false" default="0" />
+        <field key="title" dbtype="varchar" precision="255" phptype="string" null="true" default=""/>
+        <field key="description" dbtype="text" phptype="string" null="true" default=""/>
+        <field key="image" dbtype="varchar" precision="255" phptype="string" null="true" default=""/>
+        <field key="content" dbtype="text" phptype="string" null="true" default=""/>
+
+        <field key="formname" dbtype="varchar" precision="100" phptype="string" null="true" default=""/>
+        <field key="formtpl" dbtype="varchar" precision="100" phptype="string" null="true" default=""/>
+        <field key="email" dbtype="tinyint" precision="1" attributes="unsigned" phptype="boolean" null="false" default="1" index="index" />
+        <field key="autoresponder" dbtype="tinyint" precision="1" attributes="unsigned" phptype="boolean" null="false" default="1" index="index" />
+        <field key="success" dbtype="varchar" precision="100" phptype="string" null="true" default=""/>
+        <field key="error" dbtype="varchar" precision="100" phptype="string" null="true" default=""/>
+        <field key="emailusefieldforsubject" dbtype="tinyint" precision="1" attributes="unsigned" phptype="boolean" null="false" default="0" index="index" />
+        <field key="emailsubject" dbtype="varchar" precision="100" phptype="string" null="true" default=""/>
+        <field key="emailtpl" dbtype="varchar" precision="100" phptype="string" null="true" default=""/>
+        <field key="emailto" dbtype="varchar" precision="100" phptype="string" null="true" default=""/>
+        <field key="emailtext" dbtype="varchar" precision="255" phptype="string" null="true" default=""/>
+        <field key="fiarsubject" dbtype="varchar" precision="100" phptype="string" null="true" default=""/>
+        <field key="fiartpl" dbtype="varchar" precision="100" phptype="string" null="true" default=""/>
+        <field key="fiartofield" dbtype="varchar" precision="100" phptype="string" null="true" default="email"/>
+        <field key="fiarfiles" dbtype="varchar" precision="255" phptype="string" null="true" default=""/>
+        <field key="fiartext" dbtype="varchar" precision="255" phptype="string" null="true" default=""/>
+
+        <field key="contactform" dbtype="tinyint" precision="1" attributes="unsigned" phptype="boolean" null="false" default="1" />
+        <field key="contact_title" dbtype="varchar" precision="255" phptype="string" null="true" default=""/>
+        <field key="contact_description" dbtype="text" phptype="string" null="true" default=""/>
+        <field key="contact_image" dbtype="varchar" precision="255" phptype="string" null="true" default=""/>
+        <field key="contact_content" dbtype="text" phptype="string" null="true" default=""/>
+
+        <field key="start" dbtype="varchar" precision="100" phptype="string" null="true" default=""/>
+        <field key="submit" dbtype="varchar" precision="100" phptype="string" null="true" default=""/>
+        <field key="reset" dbtype="varchar" precision="100" phptype="string" null="true" default=""/>
+        <field key="prev" dbtype="varchar" precision="100" phptype="string" null="true" default=""/>
+        <field key="next" dbtype="varchar" precision="100" phptype="string" null="true" default=""/>
+
+        <field key="menuindex" dbtype="smallint" precision="10" phptype="integer" null="false" default="0"/>
+        <field key="published" dbtype="tinyint" precision="1" attributes="unsigned" phptype="boolean" null="false" default="1" index="index" />
+
+        <composite alias="Steps" class="QuizStep" local="id" foreign="form_id" cardinality="many" owner="local"/>
+        <composite alias="Fields" class="QuizField" local="id" foreign="form_id" cardinality="many" owner="local"/>
+        <composite alias="Results" class="QuizResult" local="id" foreign="form_id" cardinality="many" owner="local"/>
+    </object>
+
+    <object class="QuizStep" table="quiz_steps" extends="xPDOSimpleObject">
+        <field key="form_id" dbtype="int" precision="10" phptype="integer" attributes="unsigned" null="false" default="0"/>
+        <field key="title" dbtype="varchar" precision="100" phptype="string" null="true" default=""/>
+        <field key="description" dbtype="text" phptype="string" null="true" default=""/>
+        <field key="image" dbtype="text" phptype="string" null="false" default=""/>
+        <field key="content" dbtype="text" phptype="string" null="true" default=""/>
+
+        <field key="menuindex" dbtype="smallint" precision="10" attributes="unsigned" phptype="integer" null="false" default="0"/>
+        <field key="published" dbtype="tinyint" precision="1" attributes="unsigned" phptype="boolean" null="false" default="1" index="index" />
+
+        <aggregate alias="Form" class="QuizForm" local="form_id" foreign="id" cardinality="one" owner="foreign"/>
+        <composite alias="Fields" class="QuizField" local="id" foreign="step_id" cardinality="many" owner="local"/>
+    </object>
+
+    <object class="QuizField" table="quiz_fields" extends="xPDOSimpleObject">
+        <field key="form_id" dbtype="int" precision="10" phptype="integer" attributes="unsigned" null="false" default="0"/>
+        <field key="step_id" dbtype="int" precision="10" phptype="integer" attributes="unsigned" null="false" default="0"/>
+        <field key="contact" dbtype="int" precision="10" phptype="integer" attributes="unsigned" null="false" default="0"/>
+        <field key="type" dbtype="varchar" precision="100" phptype="string" null="true" default=""/>
+        <field key="name" dbtype="varchar" precision="100" phptype="string" null="true" default=""/>
+        <field key="label" dbtype="varchar" precision="100" phptype="string" null="true" default=""/>
+        <field key="placeholder" dbtype="varchar" precision="100" phptype="string" null="true" default=""/>
+        <field key="classes" dbtype="varchar" precision="100" phptype="string" null="true" default=""/>
+        <field key="value" dbtype="varchar" precision="255" phptype="string" null="true" default=""/>
+        <field key="default" dbtype="varchar" precision="100" phptype="string" null="true" default=""/>
+        <field key="content" dbtype="text" phptype="string" null="true" default=""/>
+        <field key="emailtitle" dbtype="varchar" precision="100" phptype="string" null="true" default=""/>
+        <field key="required" dbtype="tinyint" precision="1" attributes="unsigned" phptype="boolean" null="false" default="1" index="index" />
+
+        <field key="menuindex" dbtype="smallint" precision="10" attributes="unsigned" phptype="integer" null="false" default="0"/>
+        <field key="published" dbtype="tinyint" precision="1" attributes="unsigned" phptype="boolean" null="false" default="1" index="index" />
+
+        <composite alias="Values" class="QuizFieldValue" local="id" foreign="field_id" cardinality="many" owner="local"/>
+        <aggregate alias="Form" class="QuizForm" local="form_id" foreign="id" cardinality="one" owner="foreign"/>
+        <aggregate alias="Step" class="QuizForm" local="step_id" foreign="id" cardinality="one" owner="foreign"/>
+    </object>
+
+    <object class="QuizFieldValue" table="quiz_field_values" extends="xPDOSimpleObject">
+        <field key="field_id" dbtype="int" precision="10" phptype="integer" attributes="unsigned" null="false" default="0"/>
+
+        <field key="label" dbtype="varchar" precision="100" phptype="string" null="true" default=""/>
+        <field key="value" dbtype="varchar" precision="100" phptype="string" null="true" default=""/>
+
+        <field key="menuindex" dbtype="smallint" precision="10" attributes="unsigned" phptype="integer" null="false" default="0"/>
+        <field key="published" dbtype="tinyint" precision="1" attributes="unsigned" phptype="boolean" null="false" default="1" index="index" />
+
+        <aggregate alias="Field" class="QuizField" local="field_id" foreign="id" cardinality="one" owner="foreign"/>
+    </object>
+
+    <object class="QuizResult" table="quiz_results" extends="xPDOSimpleObject">
+        <field key="form_id" dbtype="int" precision="10" phptype="integer" attributes="unsigned" null="false" default="0"/>
+        <field key="type" dbtype="varchar" precision="100" phptype="string" null="false" default=""/>
+
+        <field key="title" dbtype="varchar" precision="100" phptype="string" null="true" default=""/>
+        <field key="description" dbtype="text" phptype="string" null="true" default=""/>
+        <field key="image" dbtype="text" phptype="string" null="false" default=""/>
+        <field key="content" dbtype="text" phptype="string" null="true" default=""/>
+        <field key="redirectto" dbtype="varchar" precision="100" phptype="string" null="true" default=""/>
+        <field key="redirectrarams" dbtype="varchar" precision="255" phptype="string" null="true" default=""/>
+
+        <field key="menuindex" dbtype="smallint" precision="10" attributes="unsigned" phptype="integer" null="false" default="0"/>
+        <field key="published" dbtype="tinyint" precision="1" attributes="unsigned" phptype="boolean" null="false" default="1" index="index" />
+
+        <aggregate alias="Form" class="QuizForm" local="form_id" foreign="id" cardinality="one" owner="foreign"/>
+    </object>
+
+</model>
