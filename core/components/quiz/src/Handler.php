@@ -46,7 +46,7 @@ class Handler
      * @param array $request
      * @return array
      */
-    public function getResponse(array $request, array $files): array
+    public function getResponse(array $request, array $files = []): array
     {
         if (!$this->quiz) {
             return $this->response->failure('Quiz not found');
@@ -75,7 +75,7 @@ class Handler
      * @param array $request
      * @return array
      */
-    private function handleStepAction(array $request): array
+    private function handleStepAction(array $request, array $files = []): array
     {
         $rules = $this->getRulesStep($request);
         if (isset($request['offset']) && $this->validator->validate($rules)) {
@@ -83,10 +83,10 @@ class Handler
                 if ($this->quiz->contactform) {
                     return $this->getContactForm($request);
                 } else {
-                    return $this->getQuizResult($request);
+                    return $this->submit($request, $files);
                 }
             }
-            return $this->getStep($request);
+            return $this->getStep($request, $files);
         }
 
         return $this->response->failure();
@@ -198,17 +198,15 @@ class Handler
      * @param array $request
      * @return array
      */
-    public function getStep(array $request): array
+    public function getStep(array $request, array $files = []): array
     {
         if (!$step = $this->quiz->getNextStep($request)) {
             if ($this->quiz->contactform) {
                 return $this->getContactForm($request);
             } else {
-                return $this->getQuizResult($request);
+                return $this->submit($request, $files);
             }
         }
-
-        $request['step_id'] = $step->id;
 
         $this->setResponseTotal($request);
 
@@ -247,13 +245,13 @@ class Handler
         }
 
         // Get result
-        $result = $this->getResult($request);
+        $result = $this->quiz->getResult();
 
         // Get values
         $fields = [...$stepFields, ...$contactFields];
 
-        $stepFields = $this->form->getValues($stepFields);
-        $contactFields = $this->form->getValues($contactFields);
+        $stepFields = $this->quiz->getValues($stepFields, $request);
+        $contactFields = $this->quiz->getValues($contactFields, $request);
 
         // Send email manager
         if ($this->quiz->email && !empty($this->quiz->emailto)) {
@@ -286,58 +284,18 @@ class Handler
 
         // Result
         if ($result) {
-            return $this->getQuizResult($request, $result);
+            switch ($result->type) {
+                case 'redirect':
+                    return $this->response->success('', ['redirect' => $result->getRedirectUrl()]);
+                case 'content':
+                    $content = $this->chunk->result($result->getContent($request));
+                    return $this->response->success('', ['content' => $content]);
+                default:
+                    return $this->response->failure($this->quiz->error);
+            }
         }
 
         return $this->response->success();
-    }
-
-    /** Get result
-     * @param array $request
-     */
-    public function getResult(array $request)
-    {
-        return $this->quiz->getResult();
-    }
-
-    /**
-     * @param array $request
-     * @return array
-     */
-    public function getQuizResult(array $request, $result = null): array
-    {
-        $this->setResponseTotal($request);
-
-        // Get result
-        if (!$result && !$result = $this->getResult($request)) {
-            return $this->response->success($this->quiz->success);
-        }
-
-        if ($result->type === 'redirect') {
-            $url = $this->getRedirectUrl($result->redirectto, $result->redirectrarams);
-            return $this->response->success('', ['redirect' => $url]);
-        }
-
-        if ($result->type === 'content') {
-            $fields = $this->quiz->getFields();
-            $values = $this->form->getValues($fields);
-
-            $fields = $this->quiz->getContactFields();
-            $contacts = $this->form->getValues($fields);
-            $content = $this->chunk->result([
-                'title' => $result->title,
-                'description' => $result->description,
-                'image' => $result->image,
-                'content' => $result->content,
-                'values' => $values,
-                'contacts' => $contacts,
-                'reset' => $this->quiz->reset,
-            ]);
-
-            return $this->response->success('', ['content' => $content]);
-        }
-
-        return $this->response->failure($this->quiz->error);
     }
 
 }

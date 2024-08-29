@@ -1,22 +1,17 @@
 <?php
 
 require_once __DIR__ . '/xpdoquizobject.php';
-class QuizField extends xPDOQuizObject {
+class QuizField extends xPDOQuizObject
+{
+    public string $objectKeyField = 'field_id';
     public function updateValues(): static
     {
         if (in_array($this->type, ['radio', 'checkbox', 'select'])) {
-            $values = $this->getMany('Values', [
-                'published' => 1
-            ]);
-            $fieldValue = [];
-            foreach ($values as $value) {
-                $fieldValue[] = [
-                    'id' => $value->id,
-                    'label' => $value->label,
-                    'value' => $value->value,
-                ];
-            }
-            $this->value = $fieldValue;
+            $this->value = array_map(fn($value) => [
+                'id' => $value->id,
+                'label' => $value->label,
+                'value' => $value->value,
+            ], $this->getItems('value'));
         }
 
         return $this;

@@ -13,15 +13,6 @@ trait Helps
         return vsprintf('%s%s-%s-%s-%s-%s%s%s', str_split(bin2hex($data), 4));
     }
 
-    public function getRedirectUrl($redirectTo, $redirectParams)
-    {
-        if (!empty($redirectParams)) {
-            $redirectParams = json_decode($redirectParams, true);
-        }
-
-        return $this->modx->makeUrl($redirectTo, '', $redirectParams, 'full');
-    }
-
     public function collToArray($items): array
     {
         return array_map(function($item) {

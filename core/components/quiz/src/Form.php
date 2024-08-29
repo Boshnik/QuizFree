@@ -14,40 +14,6 @@ class Form
         public array $request = []
     ) {}
 
-    public function getValues($fields): array
-    {
-        $values = [];
-
-        foreach ($fields as $field) {
-
-            $name = $field->name;
-            $title = $field->emailtitle ?: $name;
-
-            if (!isset($this->request[$name])) {
-                continue;
-            }
-
-            $fieldValues = $field->value;
-            $requestValues = (array)$this->request[$name];
-
-            $items = [];
-
-            if (is_array($fieldValues)) {
-                foreach ($fieldValues as $item) {
-                    if (in_array($item['value'], $requestValues, true)) {
-                        $items[] = $item['label'];
-                    }
-                }
-            } else {
-                $items[] = $this->request[$name];
-            }
-
-            $values[$title] = implode(',', $items);
-        }
-
-        return $values;
-    }
-
     /**
      * @param $email
      * @param $subject

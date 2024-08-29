@@ -4,8 +4,8 @@ use Boshnik\Quiz\Traits\Helps;
 class xPDOQuizObject extends xPDOSimpleObject
 {
     use Helps;
+    public string $objectKeyField = 'form_id';
 
-    public int $quiz_id = 0;
     public array $classKeys = [
         'form' => \QuizForm::class,
         'step' => \QuizStep::class,
@@ -14,13 +14,23 @@ class xPDOQuizObject extends xPDOSimpleObject
         'result' => \QuizResult::class,
     ];
 
+    public function getDefaultWhere(): array
+    {
+        $where = [
+            'form_id' => $this->form_id ?? $this->id,
+            'published' => 1,
+        ];
+        if ($this->objectKeyField !== 'form_id') {
+            $where[$this->objectKeyField] = $this->id;
+        }
+
+        return $where;
+    }
+
     public function getQuery($classKey, array $where = [], array $options = []): xPDOQuery
     {
         $query = $this->xpdo->newQuery($classKey);
-        $query->where(array_merge([
-            'form_id' => $this->quiz_id ?: $this->id,
-            'published' => 1,
-        ], $where));
+        $query->where([...$this->getDefaultWhere(), ...$where]);
         $query->limit(
             $options['limit'] ?? 0,
             $options['offset'] ?? 0
@@ -56,7 +66,7 @@ class xPDOQuizObject extends xPDOSimpleObject
     {
         $classKey = $this->classKeys[$className];
         return $this->xpdo->getCount($classKey, array_merge([
-            'form_id' => $this->quiz_id ?: $this->id,
+            'form_id' => $this->id,
             'published' => 1,
         ], $where));
     }

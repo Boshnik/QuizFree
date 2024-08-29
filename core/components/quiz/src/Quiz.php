@@ -14,29 +14,17 @@ class Quiz
     public string $namespace = 'quiz';
 
     /**
-     * The package name
-     * @var string $packageName
-     */
-    public string $packageName = 'Quiz';
-
-    /**
      * The version
      * @var string $version
      */
     public string $version = '1.0.0';
-
-    /**
-     * The class config
-     * @var array $config
-     */
-    public array $config = [];
 
 
     /**
      * @param \modX $modx
      * @param array $config
      */
-    function __construct(public \modX $modx, array $config = [])
+    function __construct(public \modX $modx, public array $config = [])
     {
         $corePath = MODX_CORE_PATH . 'components/quiz/';
         $assetsUrl = MODX_ASSETS_URL . 'components/quiz/';
