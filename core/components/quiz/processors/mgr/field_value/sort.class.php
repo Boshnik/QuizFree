@@ -20,7 +20,7 @@ class QuizFieldValueSortProcessor extends modObjectProcessor
         /** @var QuizFieldValue $target */
         $target = $this->modx->getObject($this->classKey, ['id' => $this->properties['target']]);
         $where = [
-            'form_id' => $target->form_id,
+            'field_id' => $target->field_id,
         ];
 
         foreach ($sources as $id) {

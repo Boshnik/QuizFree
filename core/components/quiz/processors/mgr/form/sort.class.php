@@ -2,7 +2,7 @@
 
 class QuizFormSortProcessor extends modObjectProcessor
 {
-    public string $classKey = QuizForm::class;
+    public $classkey = QuizForm::class;
 
 
     /**
