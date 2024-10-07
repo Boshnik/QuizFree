@@ -1,9 +1,7 @@
 <?php
 
-use Boshnik\Quiz\Traits\Helps;
 class xPDOQuizObject extends xPDOSimpleObject
 {
-    use Helps;
     public string $objectKeyField = 'form_id';
 
     public array $classKeys = [
@@ -65,10 +63,7 @@ class xPDOQuizObject extends xPDOSimpleObject
     public function getCount(string $className = 'step', array $where = []): int
     {
         $classKey = $this->classKeys[$className];
-        return $this->xpdo->getCount($classKey, array_merge([
-            'form_id' => $this->id,
-            'published' => 1,
-        ], $where));
+        return $this->xpdo->getCount($classKey, [...$this->getDefaultWhere(), ...$where]);
     }
 
     public function parseItems($items): array
