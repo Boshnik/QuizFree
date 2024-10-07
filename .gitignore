@@ -2,7 +2,7 @@
 config.core.php
 /core/components/quiz/vendor/
 /_assets/
-/build/
+/_build/
 /node_modules/
 gulpfile.js
 package.json

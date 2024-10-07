@@ -11,10 +11,10 @@ if (!defined('MODX_CORE_PATH')) {
 return [
     'name' => 'Quiz',
     'name_lower' => 'quiz',
-    'version' => '1.0.0',
+    'version' => '1.0.1',
     'release' => 'pl',
     // Install package to site right after build
-    'install' => false,
+    'install' => true,
     // Which elements should be updated on package upgrade
     'update' => [
         'chunks' => true,
@@ -26,7 +26,7 @@ return [
         'snippets' => true,
         'templates' => false,
         'widgets' => false,
-        'symlinks' => false,
+        'symlinks' => true,
     ],
     // Which elements should be static by default
     'static' => [
